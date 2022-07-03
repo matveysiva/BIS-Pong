@@ -7,17 +7,21 @@ using System.Threading.Tasks;
 public class Ball : MonoBehaviour
 {
 
+    PantoHandle lowerHandle;
+    private Rigidbody ballRb;
     public Vector3 initialImpulse;
 
     // Start is called before the first frame update
     void Start()
     {
-        GetComponent<Rigidbody>().AddForce(initialImpulse, ForceMode.Impulse);
+        ballRb = GetComponent<Rigidbody>();
+        lowerHandle = GameObject.Find("Panto").GetComponent<LowerHandle>();
     }
 
-    async Task ActivateBall()
+    public async Task ActivateBall()
     {
-        await GameObject.Find("Panto").GetComponent<LowerHandle>().SwitchTo(gameObject);
+        await lowerHandle.SwitchTo(gameObject);
+        ballRb.AddForce(initialImpulse, ForceMode.Impulse);
     }
 
     // Update is called once per frame

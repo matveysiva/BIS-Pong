@@ -13,48 +13,58 @@ public enum ePlayer
 public class Player : MonoBehaviour
 {
 
-    public float speed = 15f;
+    private Rigidbody playerRb;
     public ePlayer player;
-    public Rigidbody playerRb;
+    PantoHandle upperHandle;
+    public float speed = 15f;
+    // bool free = true;
 
     async void Start()
     {
-        playerRb = GetComponent<Rigidbody>();
-        await ActivatePlayer();
+        upperHandle = GameObject.Find("Panto").GetComponent<UpperHandle>();
+        // playerRb = GetComponent<Rigidbody>();
+        await upperHandle.MoveToPosition(transform.position);
+        // await ActivatePlayer();
     }
     
-    public async Task ActivatePlayer()
-    {
-        UpperHandle upperHandle = GameObject.Find("Panto").GetComponent<UpperHandle>();
-        await upperHandle.SwitchTo(gameObject);
-        upperHandle.FreeRotation();
-    }
+    // public async Task ActivatePlayer()
+    // {
+    //     await upperHandle.MoveToPosition(transform.position);
+    // }
 
     void FixedUpdate()
     {
-        PantoMovement();  
+        Debug.Log("Player.FixedUpdate");
+        transform.position = (upperHandle.HandlePosition(transform.position));
+        // transform.eulerAngles = new Vector3(0, upperHandle.GetRotation(), 0);
     }
 
     // Update is called once per frame
     void Update()
     {
-        // float inputSpeed = 0f;
+        // if (Input.GetKey(KeyCode.F))
+        // {
+        //     if (free)
+        //     {
+        //         upperHandle.Freeze();
+        //     }
+        //     else
+        //     {
+        //         upperHandle.Free();
+        //     }
+        //     free =! free;
+        // }
+
+        float inputSpeed = 0f;
         // if(player == ePlayer.Left)
         // {
         //     inputSpeed = Input.GetAxis("PlayerLeft");
         // }
-        // if (player == ePlayer.Right)
-        // {
-        //     inputSpeed = Input.GetAxis("PlayerRight");
-        // }
+        if (player == ePlayer.Right)
+        {
+            inputSpeed = Input.GetAxis("PlayerRight");
+        }
 
-        // transform.position += new Vector3(0f, 0f, inputSpeed * speed * Time.deltaTime);  
-    }
-
-    void PantoMovement()
-    {
-        float rotation = GameObject.Find("Panto").GetComponent<UpperHandle>().GetRotation();
-        transform.eulerAngles = new Vector3(0, rotation, 0);
-        playerRb.velocity = speed * transform.forward;
+        transform.position += new Vector3(0f, 0f, inputSpeed * speed * Time.deltaTime);  
     }
 }
